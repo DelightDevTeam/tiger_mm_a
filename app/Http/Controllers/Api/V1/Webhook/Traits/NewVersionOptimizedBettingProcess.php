@@ -128,6 +128,11 @@ trait NewVersionOptimizedBettingProcess
 
                 // Loop through each bet in the batch
                 foreach ($betBatch as $transaction) {
+
+                    // Validate that ActualGameTypeID is not null
+                    if (is_null($transaction->ActualGameTypeID)) {
+                        throw new \Exception('Game type ID is required and cannot be null.');
+                    }
                     // If transaction is an instance of the RequestTransaction object, extract the data
                     if ($transaction instanceof \App\Services\Slot\Dto\RequestTransaction) {
                         $transactionData = [
@@ -206,53 +211,7 @@ trait NewVersionOptimizedBettingProcess
     } while ($retryCount < $maxRetries);
 }
 
-    /**
-     * Process the wallet transfer, handling deadlock retries.
-     */
-    // public function processTransfer(User $from, User $to, TransactionName $transactionName, float $amount, int $rate, array $meta)
-    // {
-    //     $retryCount = 0;
-    //     $maxRetries = 5;
-
-    //     do {
-    //         try {
-    //             DB::transaction(function () use ($from, $to, $amount, $transactionName, $meta) {
-    //                 // Fetch the wallet and lock it for update
-    //                 $wallet = $from->wallet()->lockForUpdate()->firstOrFail();
-
-    //                 // Ensure the version matches for optimistic locking
-    //                 if ($wallet->version !== $from->wallet->version) {
-    //                     throw new \Exception('Version mismatch detected.');
-    //                 }
-
-    //                 // Update wallet balance
-    //                 $wallet->balance -= $amount;
-
-    //                 // Increment the version column
-    //                 $wallet->version += 1;
-
-    //                 // Save the changes to the wallet
-    //                 $wallet->save();
-
-    //                 // Perform the transfer
-    //                 app(WalletService::class)->transfer($from, $to, abs($amount), $transactionName, $meta);
-    //             });
-
-    //             break;  // Exit loop if successful
-    //         } catch (\Illuminate\Database\QueryException $e) {
-    //             if ($e->getCode() === '40001') {  // Deadlock error code
-    //                 $retryCount++;
-    //                 if ($retryCount >= $maxRetries) {
-    //                     throw $e;  // Max retries reached, fail
-    //                 }
-    //                 sleep(1);  // Wait before retrying
-    //             } else {
-    //                 throw $e;  // Rethrow non-deadlock exceptions
-    //             }
-    //         }
-    //     } while ($retryCount < $maxRetries);
-    // }
-
+   
     public function processTransfer(User $from, User $to, TransactionName $transactionName, float $amount, int $rate, array $meta)
 {
     $retryCount = 0;
