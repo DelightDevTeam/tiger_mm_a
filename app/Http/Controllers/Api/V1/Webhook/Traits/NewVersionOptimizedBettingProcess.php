@@ -15,6 +15,8 @@ use App\Services\WalletService;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
+
 
 trait NewVersionOptimizedBettingProcess
 {
@@ -111,12 +113,16 @@ trait NewVersionOptimizedBettingProcess
      * Creates wagers in chunks and inserts them along with related seamless transactions.
      *
      */
-    public function createWagerTransactions(array $betBatch, SeamlessEvent $event)
+
+public function createWagerTransactions(array $betBatch, SeamlessEvent $event)
 {
     $retryCount = 0;
     $maxRetries = 5;
     $userId = $event->user_id; // Get user_id from the SeamlessEvent
     $seamlessEventId = $event->id; // Get the ID of the SeamlessEvent
+
+    // Log the start of the transaction processing
+    Log::debug("Starting createWagerTransactions for user ID: $userId, event ID: $seamlessEventId");
 
     // Retry logic for deadlock handling
     do {
@@ -126,13 +132,21 @@ trait NewVersionOptimizedBettingProcess
                 $wagerData = [];
                 $seamlessTransactionsData = [];
 
+                // Log batch size being processed
+                Log::debug("Processing bet batch of size: " . count($betBatch));
+
                 // Loop through each bet in the batch
                 foreach ($betBatch as $transaction) {
 
+                    // Log transaction details
+                    Log::debug('Processing transaction', ['transaction' => $transaction]);
+
                     // Validate that ActualGameTypeID is not null
                     if (is_null($transaction->ActualGameTypeID)) {
+                        Log::error('Game type ID is null for transaction', ['transaction' => $transaction]);
                         throw new \Exception('Game type ID is required and cannot be null.');
                     }
+
                     // If transaction is an instance of the RequestTransaction object, extract the data
                     if ($transaction instanceof \App\Services\Slot\Dto\RequestTransaction) {
                         $transactionData = [
@@ -149,7 +163,9 @@ trait NewVersionOptimizedBettingProcess
                             'ActualGameTypeID' => $transaction->ActualGameTypeID,
                             'ActualProductID' => $transaction->ActualProductID,
                         ];
+                        Log::debug('Extracted transaction data', $transactionData);
                     } else {
+                        Log::error('Invalid transaction data format', ['transaction' => $transaction]);
                         throw new \Exception('Invalid transaction data format.');
                     }
 
@@ -187,29 +203,36 @@ trait NewVersionOptimizedBettingProcess
 
                 // Perform batch inserts
                 if (!empty($wagerData)) {
+                    Log::debug('Inserting wager data', ['wagerData' => $wagerData]);
                     DB::table('wagers')->insert($wagerData); // Insert wagers in bulk
                 }
 
                 if (!empty($seamlessTransactionsData)) {
+                    Log::debug('Inserting seamless transactions data', ['seamlessTransactionsData' => $seamlessTransactionsData]);
                     DB::table('seamless_transactions')->insert($seamlessTransactionsData); // Insert transactions in bulk
                 }
             });
 
+            Log::debug('createWagerTransactions completed successfully for event ID: ' . $seamlessEventId);
             break; // Exit the retry loop if successful
 
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() === '40001') { // Deadlock error code
+                Log::warning('Deadlock detected, retrying...', ['retryCount' => $retryCount]);
                 $retryCount++;
                 if ($retryCount >= $maxRetries) {
+                    Log::error('Max retries reached, throwing exception.', ['error' => $e]);
                     throw $e; // Max retries reached, fail
                 }
                 sleep(1); // Wait for a second before retrying
             } else {
+                Log::error('Query exception encountered', ['error' => $e]);
                 throw $e; // Rethrow if it's not a deadlock exception
             }
         }
     } while ($retryCount < $maxRetries);
 }
+
 
    
     public function processTransfer(User $from, User $to, TransactionName $transactionName, float $amount, int $rate, array $meta)
