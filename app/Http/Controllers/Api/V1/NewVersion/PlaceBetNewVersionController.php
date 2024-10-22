@@ -12,6 +12,9 @@ use App\Services\Slot\SlotWebhookService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use App\Models\Admin\GameType;
+use App\Models\Admin\GameTypeProduct;
+use App\Models\Admin\Product;
 
 class PlaceBetNewVersionController extends Controller
 {
@@ -92,6 +95,14 @@ class PlaceBetNewVersionController extends Controller
                 // Assuming 'from' user is the one placing the bet and 'to' is the admin or system wallet
                 $fromUser = $request->getMember();
                 $toUser = User::adminUser();  // Admin or central system wallet
+
+                  // Fetch the rate from GameTypeProduct before calling processTransfer()
+                $game_type = GameType::where('code', $transaction->GameType)->first();
+                $product = Product::where('code', $transaction->ProductID)->first();
+                $game_type_product = GameTypeProduct::where('game_type_id', $game_type->id)
+                    ->where('product_id', $product->id)
+                    ->first();
+                $rate = $game_type_product->rate;
 
                 $meta = [
                     'wager_id' => $transaction->WagerID,               // Use object property access
