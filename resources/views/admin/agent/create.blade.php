@@ -188,7 +188,7 @@
     <script>
         var errorMessage = @json(session('error'));
         var successMessage = @json(session('success'));
-        var url = 'https://bossi.live/login';
+        var url = 'https://tigermm.online/login';
         var name = @json(session('username'));
         var pw = @json(session('password'));
         var deposit_amount = @json(session('amount'));

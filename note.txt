@@ -20,16 +20,24 @@ sudo chmod -R 775 /var/www/html/bossi_a/storage/logs/
 sudo chown -R www-data:www-data /var/www/html/bossi_a/storage/logs
 
 
-bossi ပြင်ရန် lists
+# Change ownership of storage and cache directories to the web server user (www-data)
+sudo chown -R www-data:www-data /var/www/html/tiger_mm_a/storage
+sudo chown -R www-data:www-data /var/www/html/tiger_mm_a/bootstrap/cache
 
-1.Deposit Requested Lists တွင်  All,Approved,Pending,Rejected fiterထည်ံရန်။Created at တွင် date အပြင် Time ပါ ပါရန်။ နောက်ဆုံးrequest ဝင်လာတဲ့ဟာက အပေါ်ဆုံးမှာဖစ်နေရန်။ အဲ့ pageတွင်ဘဲ refresh buttonကိုထည့်ပေးရန်။
-2.Deposit Requested Lists Detailတွင် image ကို ဘယ်ဘက်မှာထားရန်။informationတွေကိုညာဘက်မှာထားရန် အဲ့ဘက်တွင်ဘဲ transaction idနောက်ဆုံး6လုံးနဲ့ date timeကိုပါထည့်ပေးရန်။ accept / reject button များကိုပါတစ်ခါတည်းထည့်ပေးရန်။
-3.Withdraw Requested Lists တွင်  All,Approved,Pending,Rejected fiterထည်ံရန်။Created at တွင် date အပြင် Time ပါ ပါရန်။ နောက်ဆုံးrequest ဝင်လာတဲ့ဟာက အပေါ်ဆုံးမှာဖစ်နေရန်။ အဲ့ pageတွင်ဘဲ refresh buttonကိုထည့်ပေးရန်။
-4.Dashboardတစ်ခုလုံးကို light version ပြောင်းရန်။
-5.balance တွေအကုန်လုံးကို 0သုံလုံးတစ်ဖြတ် "," ဖြတ်ပေးပါ။
-6.siteတစ်ခုလုံးရှိ  Deposit / Withdraw balance များကို Depositဆို အစိမ်းရောင် withdraw ဆိုအနီရောင်ဖြင့်ပြပေးရန်။
-7.balance ကို  header တွင်ထပ်ထည့်ရန်။ ဘယ် pageရောက်ရောက်headerတွင်balanceကိုကြည့်လိုရရန်။
-8.agentများရဲ့ ReferralCode ကို admin ကိုယ်တိုင်သတ်မှတ်ပေးလိုရရန်။ 
+# Set correct permissions for the directories
+sudo chmod -R 775 /var/www/html/tiger_mm_a/storage
+sudo chmod -R 775 /var/www/html/tiger_mm_a/bootstrap/cache
+
+# Ensure the laravel.log file exists and has correct permissions
+sudo touch /var/www/html/tiger_mm_a/storage/logs/laravel.log
+sudo chown www-data:www-data /var/www/html/tiger_mm_a/storage/logs/laravel.log
+sudo chmod 664 /var/www/html/tiger_mm_a/storage/logs/laravel.log
+
+# Restart the web server
+sudo systemctl restart apache2  # For Apache
+sudo systemctl restart nginx    # For NGINX
+
+
 # Set the ownership of the entire project directory to www-data user and group
 chown -R www-data:www-data /var/www/html/bossi_a
 
