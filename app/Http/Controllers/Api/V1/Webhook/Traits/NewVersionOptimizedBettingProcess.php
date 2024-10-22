@@ -156,6 +156,17 @@ trait NewVersionOptimizedBettingProcess
                                 throw new \Exception('Invalid ProductID: '.$transaction->ProductID);
                             }
 
+                             // Fetch the rate from GameTypeProduct
+                        $game_type_product = GameTypeProduct::where('game_type_id', $gameType->id)
+                            ->where('product_id', $product->id)
+                            ->first();
+                        if (! $game_type_product) {
+                            throw new \Exception('GameTypeProduct combination not found.');
+                        }
+
+                        $rate = $game_type_product->rate;  // Fetch rate for this transaction
+                        //Log::info('Fetched rate for transaction', ['rate' => $rate]);
+
                             // Build transaction data
                             $transactionData = [
                                 'Status' => $transaction->Status,
@@ -167,7 +178,8 @@ trait NewVersionOptimizedBettingProcess
                                 'TransactionAmount' => $transaction->TransactionAmount,
                                 'PayoutAmount' => $transaction->PayoutAmount,
                                 'ValidBetAmount' => $transaction->ValidBetAmount,
-                                'Rate' => $transaction->Rate,
+                                //'Rate' => $transaction->Rate,
+                                'Rate' => $rate,  // Use the fetched rate
                                 'ActualGameTypeID' => $transaction->ActualGameTypeID,
                                 'ActualProductID' => $transaction->ActualProductID,
                             ];
