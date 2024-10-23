@@ -189,7 +189,7 @@
     <script>
         var errorMessage = @json(session('error'));
         var successMessage = @json(session('success'));
-        var url = 'https://bossi.pro';
+        var url = 'https://tigermm.site';
         var name = @json(session('username'));
         var pw = @json(session('password'));
 

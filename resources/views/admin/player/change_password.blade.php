@@ -115,7 +115,7 @@
     <script>
         var errorMessage = @json(session('error'));
         var successMessage = @json(session('success'));
-        var url = 'https://bossi.pro/login';
+        var url = 'https://tigermm.site/login';
         var name = @json(session('username'));
         var pw = @json(session('password'));
 
