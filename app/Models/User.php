@@ -47,6 +47,9 @@ class User extends Authenticatable implements Wallet
         'type',
         'is_changed_password',
         'referral_code',
+        'bank_id',
+        'account_name',
+        'account_no'
     ];
 
     protected $dispatchesEvents = [

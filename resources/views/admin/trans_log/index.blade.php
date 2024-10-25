@@ -37,7 +37,7 @@
 
                             <tr>
                                 <th>Date</th>
-                                <th>To User</th>
+                                <th>To UserID</th>
                                 <th>Amount</th>
                                 <th>Type</th>
                                 <th>Note</th>
@@ -49,7 +49,7 @@
                                     <td>
                                         {{ $log->created_at }}
                                     </td>
-                                    <td>{{ $log->targetUser->name }}</td>
+                                    <td>{{ $log->targetUser->user_name }}</td>
                                     <td>
                                         <div
                                             class="d-flex align-items-center text-{{ $log->type == 'withdraw' ? 'success' : 'danger' }} text-gradient text-sm font-weight-bold ms-auto">

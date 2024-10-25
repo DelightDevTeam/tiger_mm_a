@@ -20,12 +20,22 @@ class PermissionsTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'title' => 'agent_access',
+                'title' => 'master_index',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'title' => 'player_access',
+                'title' => 'master_create',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'title' => 'master_edit',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'title' => 'master_delete',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

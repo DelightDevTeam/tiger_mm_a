@@ -80,7 +80,7 @@ Route::group(['middleware' => ['auth:sanctum', 'checkBanned']], function () {
     Route::get('agent', [AuthController::class, 'getAgent']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('changePassword', [AuthController::class, 'changePassword']);
-    Route::post('profile', [AuthController::class, 'profile']);
+    // Route::post('profile', [AuthController::class, 'profile']);
     Route::get('logo', [AgentLogoController::class, 'index']);
     Route::group(['prefix' => 'transaction'], function () {
         Route::post('withdraw', [WithDrawRequestController::class, 'withdraw']);

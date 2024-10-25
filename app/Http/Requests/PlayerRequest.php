@@ -24,9 +24,12 @@ class PlayerRequest extends FormRequest
         return [
             'user_name' => ['required', 'string', 'unique:users,user_name'],
             'name' => ['required', 'string', 'unique:users,name'],
-            'phone' => ['required', 'regex:/^[0-9]+$/', 'unique:users,phone'],
+            'phone' => ['required', 'regex:/^[0-9]+$/'],
             'password' => 'required|min:6',
             'amount' => 'nullable|numeric',
+            'payment_type_id' => ['required'],
+            'account_name' => ['required', 'string'],
+            'account_number' => ['required', 'regex:/^[0-9]+$/']
         ];
     }
 }

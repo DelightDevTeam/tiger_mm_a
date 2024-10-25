@@ -75,9 +75,9 @@
                                     <span class="d-block">{{ $withdraw->user->name }}</span>
                                 </td>
                                 <td>{{ number_format($withdraw->amount) }}</td>
-                                <td>{{ $withdraw->bank->paymentType->name }}</td>
-                                <td>{{$withdraw->account_name}}</td>
-                                <td>{{$withdraw->account_number}}</td>
+                                <td>{{ $withdraw->user->banks[0]['payment_type_id'] }}</td>
+                                <td>{{$withdraw->user->banks[0]['account_name']}}</td>
+                                <td>{{$withdraw->user->banks[0]['account_number']}}</td>
                                 <td>
                                     @if ($withdraw->status == 0)
                                         <span class="badge text-bg-warning text-white mb-2">Pending</span>

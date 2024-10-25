@@ -7,6 +7,7 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PlayerRequest;
 use App\Http\Requests\TransferLogRequest;
+use App\Models\Admin\Bank;
 use App\Models\PaymentType;
 use App\Models\User;
 use App\Services\UserService;
@@ -14,17 +15,17 @@ use App\Services\WalletService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
 class PlayerController extends Controller
 {
     protected $userService;
 
-    private const PLAYER_ROLE = 3;
+    private const PLAYER_ROLE = 4;
 
     public function __construct(UserService $userService)
     {
@@ -77,7 +78,9 @@ class PlayerController extends Controller
         );
         $player_name = $this->generateRandomString();
 
-        return view('admin.player.create', compact('player_name'));
+        $paymentTypes = PaymentType::all();
+
+        return view('admin.player.create', compact('player_name', 'paymentTypes'));
     }
 
     /**
@@ -95,6 +98,7 @@ class PlayerController extends Controller
         }
 
         try {
+            DB::beginTransaction();
             if (isset($inputs['amount']) && $inputs['amount'] > $agent->balanceFloat) {
                 throw new \Exception('Insufficient balance for transfer.');
             }
@@ -113,6 +117,15 @@ class PlayerController extends Controller
             if (isset($inputs['amount'])) {
                 app(WalletService::class)->transfer($agent, $user, $inputs['amount'], TransactionName::CreditTransfer);
             }
+            if ($user) {
+                Bank::create([
+                    'agent_id' => $user->id,
+                    'account_number' => $request->account_number,
+                    'account_name' => $request->account_name,
+                    'payment_type_id' => $request->payment_type_id
+                ]);
+            }
+            DB::commit();
 
             return redirect()->back()
                 ->with('success', 'Player created successfully')
@@ -120,8 +133,8 @@ class PlayerController extends Controller
                 ->with('password', $request->password)
                 ->with('username', $user->user_name);
         } catch (\Exception $e) {
-            Log::error('Error creating user: '.$e->getMessage());
-
+            Log::error('Error creating user: ' . $e->getMessage());
+            DB::rollback();
             return redirect()->back()->with('error', 'An error occurred while creating the player.');
         }
     }
@@ -152,8 +165,9 @@ class PlayerController extends Controller
             Response::HTTP_FORBIDDEN,
             '403 Forbidden |You cannot  Access this page because you do not have permission'
         );
+        $paymentTypes = PaymentType::all();
 
-        return response()->view('admin.player.edit', compact('player'));
+        return response()->view('admin.player.edit', compact('player', 'paymentTypes'));
     }
 
     /**
@@ -161,10 +175,23 @@ class PlayerController extends Controller
      */
     public function update(Request $request, User $player)
     {
+        DB::transaction( function () use($request, $player) {
 
-        $player->update($request->all());
+            $player->update([
+                'name' => $request->name,
+                'phone' => $request->phone,
+            ]);
 
+            $bank = Bank::where('agent_id', $player->id)->first();
+            $bank->update([
+                'payment_type_id' => $request->payment_type_id,
+                'account_name' => $request->account_name,
+                'account_number' => $request->account_number
+            ]);
+
+        });
         return redirect()->route('admin.player.index')->with('success', 'User updated successfully');
+
     }
 
     /**
@@ -202,7 +229,7 @@ class PlayerController extends Controller
 
         return redirect()->back()->with(
             'success',
-            'User '.($user->status == 1 ? 'activate' : 'inactive').' successfully'
+            'User ' . ($user->status == 1 ? 'activate' : 'inactive') . ' successfully'
         );
     }
 
@@ -315,8 +342,9 @@ class PlayerController extends Controller
     private function generateRandomString()
     {
         $randomNumber = mt_rand(10000000, 99999999);
+        $user_name = Auth::user()->name;
 
-        return 'SBS'.$randomNumber;
+        return strtoupper(substr($user_name, 0, 3)) . $randomNumber;
     }
 
     private function getRefrenceId($prefix = 'REF')

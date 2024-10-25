@@ -25,9 +25,6 @@ class WithDrawRequestController extends Controller
                 'user_id' => $player->id,
                 'agent_id' => $player->agent_id,
                 'amount' => $request->amount,
-                'account_name' => $request->account_name,
-                'account_number' => $request->account_number,
-                'bank_id' => $request->bank_id,
             ]);
 
             return $this->success($withdraw, 'Withdraw Request Success');
