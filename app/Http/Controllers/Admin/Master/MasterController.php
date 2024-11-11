@@ -196,7 +196,7 @@ class MasterController extends Controller
             }
 
             // Transfer money
-            app(WalletService::class)->transfer($admin, $master, $request->validated('amount'), TransactionName::CreditTransfer);
+            app(WalletService::class)->transfer($admin, $master, $request->validated('amount'), TransactionName::CreditTransfer, ['note' => $request->note]);
 
             return redirect()->back()->with('success', 'Money fill request submitted successfully!');
         } catch (Exception $e) {
@@ -229,7 +229,7 @@ class MasterController extends Controller
             }
 
             // Transfer money
-            app(WalletService::class)->transfer($master, $admin, $request->validated('amount'), TransactionName::DebitTransfer);
+            app(WalletService::class)->transfer($master, $admin, $request->validated('amount'), TransactionName::DebitTransfer, ['note' => $request->note]);
 
             return redirect()->back()->with('success', 'Money fill request submitted successfully!');
         } catch (Exception $e) {

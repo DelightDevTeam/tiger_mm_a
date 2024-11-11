@@ -36,6 +36,7 @@
                         <thead class="thead-light">
 
                             <tr>
+                                <th>ID</th>
                                 <th>Date</th>
                                 <th>To UserID</th>
                                 <th>Amount</th>
@@ -46,6 +47,7 @@
                         <tbody>
                             @foreach ($transferLogs as $log)
                                 <tr>
+                                    <td>{{$loop->iteration}}</td>
                                     <td>
                                         {{ $log->created_at }}
                                     </td>

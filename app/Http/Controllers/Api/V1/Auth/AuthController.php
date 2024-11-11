@@ -23,7 +23,7 @@ class AuthController extends Controller
 {
     use HttpResponses;
 
-    private const PLAYER_ROLE = 3;
+    private const PLAYER_ROLE = 4;
 
     public function login(LoginRequest $request)
     {
@@ -57,10 +57,6 @@ class AuthController extends Controller
 
         if (! $agent) {
             return $this->error('', 'Not Found Agent', 401);
-        }
-
-        if ($this->isExistingUserForAgent($request->phone, $agent->id)) {
-            return $this->error('', 'Already Exist Account for this number', 401);
         }
 
         $user = User::create([
@@ -152,8 +148,4 @@ class AuthController extends Controller
         return 'SBS'.$randomNumber;
     }
 
-    private function isExistingUserForAgent($phone, $agent_id)
-    {
-        return User::where('phone', $phone)->where('agent_id', $agent_id)->first();
-    }
 }

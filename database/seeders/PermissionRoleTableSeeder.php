@@ -43,12 +43,6 @@ class PermissionRoleTableSeeder extends Seeder
         Role::findOrFail(2)->permissions()->sync($master_permissions->pluck('id'));
 
         $agent_permissions = Permission::whereIn('title', [
-            'agent_access',
-            'agent_index',
-            'agent_create',
-            'agent_edit',
-            'agent_delete',
-            'agent_change_password_access',
             'player_index',
             'player_create',
             'player_edit',

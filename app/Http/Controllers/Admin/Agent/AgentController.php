@@ -128,9 +128,6 @@ class AgentController extends Controller
      */
     public function update(Request $request, string $id): RedirectResponse
     {
-        if (! Gate::allows('agent_edit')) {
-            abort(403);
-        }
 
         $param = $request->validate([
             'name' => ['required', 'string', 'unique:users,name,'.$id],

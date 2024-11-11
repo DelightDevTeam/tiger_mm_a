@@ -25,6 +25,12 @@ class BankTableSeeder extends Seeder
                 'account_number' => '063425879743',
                 'account_name' => 'Testing',
             ],
+            [
+                'payment_type_id' => 2,
+                'agent_id' => 4,
+                'account_number' => '063425879743',
+                'account_name' => 'Testing Acc',
+            ],
         ];
 
         Bank::insert($bank);
