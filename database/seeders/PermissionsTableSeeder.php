@@ -40,6 +40,11 @@ class PermissionsTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'title' => 'player_access',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'title' => 'player_index',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -56,6 +61,11 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'title' => 'player_delete',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'title' => 'agent_access',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

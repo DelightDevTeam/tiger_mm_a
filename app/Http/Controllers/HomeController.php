@@ -3,20 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TransactionName;
+use App\Enums\UserType;
 use App\Models\Admin\UserLog;
-use App\Models\SeamlessTransaction;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\WalletService;
-use App\Settings\AppSetting;
-use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -40,23 +35,34 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $isAdmin = $user->hasRole('Admin');
-        $getUserCounts = $this->getUserCounts($isAdmin, $user);
-        $agent_count = $getUserCounts('Agent');
-        $player_count = $getUserCounts('Player');
+        $role = $user->roles->pluck('title');
+
+        $master_count = User::where('type', UserType::Master)->when($role[0] = 'Admin', function ($query) use ($user) {
+            $query->where('agent_id', $user->id);
+        })->count();
+
+        $agent_count = User::where('type', UserType::Agent)
+            ->when($role[0] === 'Master', function ($query) use ($user) {
+                return $query->where('agent_id', $user->id);
+            })
+            ->count();
+
+        $player_count = User::where('type', UserType::Player)
+            ->when($role[0] === 'Agent', function ($query) use ($user) {
+                return $query->where('agent_id', $user->id);
+            })
+            ->count();
+
         $totalDeposit = $this->getTotalDeposit();
         $totalWithdraw = $this->getTotalWithdraw();
-        $todayDeposit = $this->getTodayDeposit();
-        $todayWithdraw = $this->getTodayWithdraw();
 
         return view('admin.dashboard', compact(
             'agent_count',
             'player_count',
+            'master_count',
             'user',
             'totalDeposit',
-            'totalWithdraw',
-            'todayDeposit',
-            'todayWithdraw'
+            'totalWithdraw'
         ));
     }
 
@@ -108,31 +114,11 @@ class HomeController extends Controller
         return view('admin.logs', compact('logs'));
     }
 
-    private function getTodayWithdraw()
-    {
-        return DB::table('transactions')->select(
-            DB::raw('SUM(transactions.amount) as amount'))
-            ->where('transactions.target_user_id', Auth::id())
-            ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
-            ->where('transactions.type', 'withdraw')
-            ->whereDate('transactions.created_at', Carbon::now()->today()->toDateString())
-            ->first();
-    }
-
-    private function getTodayDeposit()
-    {
-        return Auth::user()->transactions()->with('targetUser')
-            ->select(DB::raw('SUM(transactions.amount) as amount'))
-            ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
-            ->where('transactions.type', 'deposit')
-            ->whereDate('transactions.created_at', Carbon::now()->today()->toDateString())
-            ->first();
-    }
-
     private function getTotalWithdraw()
     {
         return Auth::user()->transactions()->with('targetUser')->select(
-            DB::raw('SUM(transactions.amount) as amount'))
+            DB::raw('SUM(transactions.amount)/100 as amount')
+        )
             ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
             ->where('transactions.type', 'withdraw')
             ->first();
@@ -141,20 +127,9 @@ class HomeController extends Controller
     private function getTotalDeposit()
     {
         return Auth::user()->transactions()->with('targetUser')
-            ->select(DB::raw('SUM(transactions.amount) as amount'))
+            ->select(DB::raw('SUM(transactions.amount)/100 as amount'))
             ->whereIn('transactions.name', ['debit_transfer', 'credit_transfer'])
             ->where('transactions.type', 'deposit')
             ->first();
-    }
-
-    private function getUserCounts($isAdmin, $user)
-    {
-        return function ($roleTitle) use ($isAdmin, $user) {
-            return User::whereHas('roles', function ($query) use ($roleTitle) {
-                $query->where('title', '=', $roleTitle);
-            })->when(! $isAdmin, function ($query) use ($user) {
-                $query->where('agent_id', $user->id);
-            })->count();
-        };
     }
 }

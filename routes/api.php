@@ -74,7 +74,9 @@ Route::group(['prefix' => 'Seamless'], function () {
 Route::group(['middleware' => ['auth:sanctum', 'checkBanned']], function () {
     Route::get('wager-logs', [WagerController::class, 'index']);
     Route::get('transactions', [TransactionController::class, 'index']);
-    Route::get('payment-type', [PaymentTypeController::class, 'get']);
+    Route::get('agent-payment-type', [PaymentTypeController::class, 'get']);
+    Route::get('payment-type', [PaymentTypeController::class, 'paymentType']);
+
     //logout
     Route::get('user', [AuthController::class, 'getUser']);
     Route::get('agent', [AuthController::class, 'getAgent']);

@@ -16,22 +16,19 @@ class WithDrawRequestController extends Controller
 
     public function withdraw(WithdrawRequest $request)
     {
-        try {
             $player = Auth::user();
             if ($request->amount > $player->balanceFloat) {
                 return $this->error('', 'Insufficient Balance', 401);
             }
+
             $withdraw = ModelsWithDrawRequest::create([
                 'user_id' => $player->id,
                 'agent_id' => $player->agent_id,
                 'amount' => $request->amount,
+                'payment_type_id' => $request->payment_type_id
             ]);
 
             return $this->success($withdraw, 'Withdraw Request Success');
-
-        } catch (Exception $e) {
-            $this->error('', $e->getMessage(), 401);
-        }
     }
 
     public function log()

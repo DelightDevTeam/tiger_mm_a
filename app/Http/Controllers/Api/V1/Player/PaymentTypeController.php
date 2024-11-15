@@ -18,19 +18,15 @@ class PaymentTypeController extends Controller
     {
         $player = Auth::user();
 
-        $data = PaymentType::rightJoin('banks', function ($join) {
-            $join->on('banks.payment_type_id', '=', 'payment_types.id');
-        })->where('banks.agent_id', '=', $player->agent_id)->get();
+        $data =  Bank::with('paymentType')->where('agent_id', $player->agent_id)->get();
 
-        return $this->success($data, 'Get Payment Type List');
+        return $this->success($data, 'Get  Agent Payment Type List');
     }
 
-    public function getAgentPayment()
+    public function paymentType()
     {
-        $player = Auth::user();
+        $data =  PaymentType::all();
 
-        $data = UserPayment::with('paymentType')->where('user_id', $player->agent_id)->get();
-
-        return $this->success($data, 'Get Agent Payment Type List');
+        return $this->success($data, 'Payment Type List');
     }
 }

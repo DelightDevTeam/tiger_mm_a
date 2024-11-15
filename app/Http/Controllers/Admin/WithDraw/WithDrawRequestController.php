@@ -25,12 +25,12 @@ class WithDrawRequestController extends Controller
         return view('admin.withdraw_request.index', compact('withdraws'));
     }
 
-    public function statusChangeIndex(Request $request, $id)
+    public function statusChangeIndex(Request $request, WithDrawRequest $withdraw)
     {
-        dd('here');
+
             $agent = Auth::user();
             $player = User::find($request->player);
-            dd($player->balanceFloat);
+            
             if ($request->status == 1 && $player->balanceFloat < $request->amount) {
                 return redirect()->back()->with('error', 'Insufficient Balance!');
             }

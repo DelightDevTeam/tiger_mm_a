@@ -29,8 +29,8 @@
                         <i class="fas fa-coins"></i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Deposit</p>
-                        <h4 class="mb-0">{{ number_format($totalDeposit->amount)}}</h4>
+                        <p class="text-sm mb-0 text-capitalize">Withdraw</p>
+                        <h4 class="mb-0">{{ number_format(abs($totalDeposit->amount))}}</h4>
 
 
                     </div>
@@ -49,52 +49,11 @@
                         <i class="fas fa-coins"></i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize ">WithDraw</p>
+                        <p class="text-sm mb-0 text-capitalize ">Deposit</p>
                         <h4 class="mb-0 ">
-                            {{ number_format($totalWithdraw->amount) }}
+                            {{ number_format(abs($totalWithdraw->amount)) }}
                         </h4>
 
-                    </div>
-                </div>
-                <hr class="horizontal my-0 dark">
-                <div class="card-footer p-3">
-                    <p class="mb-0 "><span class="text-success text-sm font-weight-bolder"></span>latest update</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 mt-lg-0 mt-4">
-            <div class="card  mb-2">
-                <div class="card-header p-3 pt-2 bg-transparent">
-                    <div class="icon icon-lg icon-shape bg-gradient-warning shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                        {{-- <i class="material-icons opacity-10">store</i> --}}
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize ">TodayDeposit</p>
-                        <h4 class="mb-0 ">
-                            {{ number_format($todayDeposit->amount)}}
-                        </h4>
-
-                    </div>
-                </div>
-                <hr class="horizontal my-0 dark">
-                <div class="card-footer p-3">
-                    <p class="mb-0 "><span class="text-success text-sm font-weight-bolder"></span>latest update</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 mt-lg-0 mt-4">
-            <div class="card  mb-2">
-                <div class="card-header p-3 pt-2 bg-transparent">
-                    <div class="icon icon-lg icon-shape bg-gradient-warning shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                        {{-- <i class="material-icons opacity-10">store</i> --}}
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize ">TodayWithdraw</p>
-                        <h4 class="mb-0 ">
-                            {{ number_format($todayWithdraw->amount) }}
-                        </h4>
                     </div>
                 </div>
                 <hr class="horizontal my-0 dark">
@@ -104,6 +63,28 @@
             </div>
         </div>
         @can('admin_access')
+        <div class="col-lg-3 col-md-6 col-sm-6 mt-lg-0 mt-4">
+            <div class="card ">
+                <div class="card-header p-3 pt-2 bg-transparent">
+                    <div class="icon icon-lg icon-shape bg-gradient-danger shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                       <a href="{{route('admin.agent.create')}}">
+                        {{-- <i class="material-icons opacity-10">person_add</i> --}}
+                        <i class="fas fa-users"></i>
+                    </a>
+                    </div>
+                    <div class="text-end pt-1">
+                        <p class="text-sm mb-0 text-capitalize ">Master</p>
+                        <h4 class="mb-0 ">{{$master_count}}</h4>
+                    </div>
+                </div>
+                <hr class="horizontal my-0 dark">
+                <div class="card-footer p-3">
+                    <p class="mb-0 ">Just updated</p>
+                </div>
+            </div>
+        </div>
+        @endcan
+        @can('agent_access')
         <div class="col-lg-3 col-md-6 col-sm-6 mt-lg-0 mt-4">
             <div class="card ">
                 <div class="card-header p-3 pt-2 bg-transparent">
@@ -125,7 +106,7 @@
             </div>
         </div>
         @endcan
-        @can('agent_access')
+        @can('player_access')
         <div class="col-lg-3 col-md-6 col-sm-6 mt-lg-0 mt-4">
             <div class="card ">
                 <div class="card-header p-3 pt-2 bg-transparent">

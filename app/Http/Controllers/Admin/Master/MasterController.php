@@ -40,7 +40,6 @@ class MasterController extends Controller
             ->where('agent_id', auth()->id())
             ->orderBy('id', 'desc')
             ->get();
-
         //kzt
         return view('admin.master.index', compact('users'));
     }

@@ -90,7 +90,7 @@ class AgentController extends Controller
             [
                 'password' => Hash::make($inputs['password']),
                 'agent_id' => Auth::id(),
-                'type' => UserType::Admin,
+                'type' => UserType::Agent,
             ]
         );
 
