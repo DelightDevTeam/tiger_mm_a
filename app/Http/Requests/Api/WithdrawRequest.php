@@ -23,9 +23,7 @@ class WithdrawRequest extends FormRequest
     {
         return [
             'amount' => ['required', 'integer', 'min:10000'],
-            'account_number' => ['required', 'regex:/^[0-9]+$/'],
-            'account_name' => ['required', 'string'],
-            'payment_type_id' => ['required', 'integer', 'exists:payment_types,id'],
+            'password' => ['required']
         ];
     }
 }
