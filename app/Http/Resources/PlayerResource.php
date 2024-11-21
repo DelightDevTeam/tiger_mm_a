@@ -23,6 +23,7 @@ class PlayerResource extends JsonResource
             'profile' => asset('assets/img/player_profile/'.$this->profile),
             'balance' => $this->balanceFloat,
             'status' => $this->status,
+            'banks' => $this->banks
         ];
     }
 }

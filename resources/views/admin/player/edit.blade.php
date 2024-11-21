@@ -110,7 +110,7 @@
               <select name="payment_type_id" id="">
                 <option value="">Select Payment Type</option>
                 @foreach($paymentTypes as $paymentType)
-                <option value="{{$paymentType->id}}" {{$paymentType->id == $player->banks[0]['payment_type_id'] ? 'selected': ''}}>{{$paymentType->name}}</option>
+                <option value="{{$paymentType->id}}">{{$paymentType->name}}</option>
                 @endforeach
               </select>
               @error('payment_type_id')

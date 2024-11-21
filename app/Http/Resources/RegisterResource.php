@@ -20,6 +20,7 @@ class RegisterResource extends JsonResource
             'phone' => $this->phone,
             'balance' => $this->balanceFloat,
             'status' => $this->status,
+            'banks' => $this->banks
         ];
 
         return [

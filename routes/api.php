@@ -81,6 +81,8 @@ Route::group(['middleware' => ['auth:sanctum', 'checkBanned']], function () {
     Route::get('user', [AuthController::class, 'getUser']);
     Route::get('agent', [AuthController::class, 'getAgent']);
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('contact', [AuthController::class, 'getContact']);
+
     Route::post('changePassword', [AuthController::class, 'changePassword']);
     // Route::post('profile', [AuthController::class, 'profile']);
     Route::get('logo', [AgentLogoController::class, 'index']);

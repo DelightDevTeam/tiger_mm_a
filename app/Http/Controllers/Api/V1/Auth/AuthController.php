@@ -13,6 +13,7 @@ use App\Http\Resources\PlayerResource;
 use App\Http\Resources\RegisterResource;
 use App\Http\Resources\UserResource;
 use App\Models\Admin\UserLog;
+use App\Models\Contact;
 use App\Models\User;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -40,6 +41,10 @@ class AuthController extends Controller
 
         if ($user->is_changed_password == 0) {
             return $this->error($user, 'You have to change password', 200);
+        }
+
+        if ($user->roles[0]['id'] != self::PLAYER_ROLE) {
+            return $this->error('', 'You do not have permission', 200);
         }
 
         UserLog::create([
@@ -134,6 +139,15 @@ class AuthController extends Controller
         return $this->success(new PlayerResource($player), 'Update profile');
     }
 
+    public function getContact()
+    {
+        $player = Auth::user();
+
+        $contact = Contact::where('agent_id', $player->agent_id)->get();
+
+        return $this->success($contact, 'Agent Contact list');
+    }
+    
     public function getAgent()
     {
         $player = Auth::user();
@@ -145,7 +159,7 @@ class AuthController extends Controller
     {
         $randomNumber = mt_rand(10000000, 99999999);
 
-        return 'SBS'.$randomNumber;
+        return 'P'.$randomNumber;
     }
 
 }
