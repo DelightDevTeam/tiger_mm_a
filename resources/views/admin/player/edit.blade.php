@@ -119,14 +119,16 @@
             </div>
             <div class="custom-form-group">
               <label for="title">Account Name <span class="text-danger">*</span></label>
-              <input type="text" name="account_name" class="form-control" value="{{$player->banks ? $player->banks[0]['account_name'] : '' }}" placeholder="Enter Bank Account Name">
+              
+              <input type="text" name="account_name" class="form-control" value="{{ isset($player->banks) && count($player->banks) > 0 ? $player->banks[0]['account_name'] : '' }}" 
+               placeholder="Enter Bank Account Name">
               @error('account_name')
               <span class="text-danger d-block">*{{ $message }}</span>
               @enderror
             </div>
             <div class="custom-form-group">
               <label for="title">Account Number <span class="text-danger">*</span></label>
-              <input type="text" name="account_number" class="form-control" value="{{ $player->banks ? $player->banks[0]['account_number'] : '' }}" placeholder="Enter Bank Account Number">
+              <input type="text" name="account_number" class="form-control" value="{{ isset($player->banks) && count($player->banks) > 0 ? $player->banks[0]['account_number'] : '' }}"               placeholder="Enter Bank Account Number">
               @error('account_number')
               <span class="text-danger d-block">*{{ $message }}</span>
               @enderror

@@ -183,11 +183,22 @@ class PlayerController extends Controller
             ]);
 
             $bank = Bank::where('agent_id', $player->id)->first();
-            $bank->update([
-                'payment_type_id' => $request->payment_type_id,
-                'account_name' => $request->account_name,
-                'account_number' => $request->account_number
-            ]);
+            if($bank)
+            {
+                $bank->update([
+                    'payment_type_id' => $request->payment_type_id,
+                    'account_name' => $request->account_name,
+                    'account_number' => $request->account_number
+                ]);
+            }else{
+                Bank::create([
+                    'agent_id' => $player->id,
+                    'account_number' => $request->account_number,
+                    'account_name' => $request->account_name,
+                    'payment_type_id' => $request->payment_type_id
+                ]);
+            }
+           
 
         });
         return redirect()->route('admin.player.index')->with('success', 'User updated successfully');
