@@ -105,6 +105,20 @@
               <span class="text-danger d-block">*{{ $message }}</span>
               @enderror
             </div>
+            @if($player->banks && count($player->banks) > 0)
+            <div class="custom-form-group">
+              <label for="title">Payment Type <span class="text-danger">*</span></label>
+              <select name="payment_type_id" id="">
+                <option value="">Select Payment Type</option>
+                @foreach($paymentTypes as $paymentType)
+                <option value="{{$paymentType->id}}" {{$paymentType->id == $player->banks[0]['payment_type_id'] ? "selected" : ''}}>{{$paymentType->name}}</option>
+                @endforeach
+              </select>
+              @error('payment_type_id')
+              <span class="text-danger d-block">*{{ $message }}</span>
+              @enderror
+            </div>
+            @else
             <div class="custom-form-group">
               <label for="title">Payment Type <span class="text-danger">*</span></label>
               <select name="payment_type_id" id="">
@@ -117,6 +131,7 @@
               <span class="text-danger d-block">*{{ $message }}</span>
               @enderror
             </div>
+            @endif
             <div class="custom-form-group">
               <label for="title">Account Name <span class="text-danger">*</span></label>
               

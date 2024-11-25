@@ -67,7 +67,7 @@ class AuthController extends Controller
         $user = User::create([
             'phone' => $request->phone,
             'name' => $request->name,
-            'user_name' => $this->generateRandomString(),
+            'user_name' => $this->generateRandomString($agent),
             'password' => Hash::make($request->password),
             'agent_id' => $agent->id,
             'type' => UserType::Player,
@@ -155,11 +155,11 @@ class AuthController extends Controller
         return $this->success(new AgentResource($player->parent), 'Agent Information List');
     }
 
-    private function generateRandomString()
+    private function generateRandomString($agent)
     {
         $randomNumber = mt_rand(10000000, 99999999);
 
-        return 'P'.$randomNumber;
+        return strtoupper(substr($agent->name, 0, 3)) . $randomNumber;
     }
 
 }
