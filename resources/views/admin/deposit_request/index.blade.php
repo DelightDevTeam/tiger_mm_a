@@ -67,12 +67,14 @@
         <th>Action</th>
       </thead>
       <tbody>
+      @php $totalAmount = 0; @endphp
       @foreach ($deposits as $deposit)
         <tr>
             <td>{{ $loop->iteration }}</td>
             <td>{{ $deposit->user->user_name}}</td>
             <td>{{ $deposit->user->name }}</td>
             <td>{{ number_format($deposit->amount) }}</td>
+            @php $totalAmount += $deposit->amount; @endphp
             <td>{{ $deposit->refrence_no }}</td>
             <td>{{ $deposit->bank->paymentType->name }}</td>
             <td>
@@ -93,6 +95,13 @@
         </tr>
     @endforeach
 </tbody>
+<tfoot>
+        <tr>
+            <td colspan="3" class="text-right"><strong>Total:</strong></td>
+            <td><strong>{{ number_format($totalAmount) }}</strong></td>
+            <td colspan="5"></td>
+        </tr>
+    </tfoot>
     </table>
 </div>
 </div>
