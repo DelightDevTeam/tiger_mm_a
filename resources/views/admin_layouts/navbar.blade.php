@@ -43,6 +43,7 @@
         $notiCount = App\Helpers\Common::getNotiCount();
       ?>
       <ul class="navbar-nav  justify-content-end">
+        @can('deposit')
         <li class="nav-item dropdown py-0 pe-3">
           <a href="javascript:;" class="nav-link py-0 px-1 position-relative line-height-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-bell">
@@ -52,6 +53,7 @@
             </span>
           </a>
         </li>
+        @endcan
         <li>{{\Illuminate\Support\Facades\Auth::user()->name}}</li>
         <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
           <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
