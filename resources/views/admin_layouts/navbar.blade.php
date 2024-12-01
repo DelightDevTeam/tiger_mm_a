@@ -33,14 +33,26 @@
       </a>
     </div>
     <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-    <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-{{--        <div class="input-group input-group-outline">--}}
-{{--          <label class="form-label">Search here</label>--}}
-{{--          <input type="text" class="form-control">--}}
-{{--        </div>--}}
+      <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+        {{-- <div class="input-group input-group-outline">--}}
+        {{-- <label class="form-label">Search here</label>--}}
+        {{-- <input type="text" class="form-control">--}}
+        {{-- </div>--}}
       </div>
+      <?php
+        $notiCount = App\Helpers\Common::getNotiCount();
+      ?>
       <ul class="navbar-nav  justify-content-end">
-          <li>{{\Illuminate\Support\Facades\Auth::user()->name}}</li>
+        <li class="nav-item dropdown py-0 pe-3">
+          <a href="javascript:;" class="nav-link py-0 px-1 position-relative line-height-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bell">
+            </i>
+            <span class="position-absolute top-5 start-100 translate-middle badge rounded-pill bg-danger border border-white small py-1 px-2">
+              <span class="small">{{$notiCount}}</span>
+            </span>
+          </a>
+        </li>
+        <li>{{\Illuminate\Support\Facades\Auth::user()->name}}</li>
         <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
           <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
             <div class="sidenav-toggler-inner">
@@ -51,9 +63,9 @@
           </a>
         </li>
         <li class="nav-item px-3">
-            <p class="font-weight-bolder mb-0">Balance :
-                <span>{{number_format(\Illuminate\Support\Facades\Auth::user()->balanceFloat)}} </span>
-            </p>
+          <p class="font-weight-bolder mb-0">Balance :
+            <span>{{number_format(\Illuminate\Support\Facades\Auth::user()->balanceFloat)}} </span>
+          </p>
         </li>
 
       </ul>
