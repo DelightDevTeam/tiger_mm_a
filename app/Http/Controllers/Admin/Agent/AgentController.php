@@ -128,14 +128,13 @@ class AgentController extends Controller
      */
     public function update(Request $request, string $id): RedirectResponse
     {
-
-        $param = $request->validate([
-            'name' => ['required', 'string', 'unique:users,name,'.$id],
+        $request->validate([
+            'phone' => ['sometimes', 'regex:/^[0-9]+$/'],
         ]);
-
+        
         $user = User::find($id);
 
-        $user->update($param);
+        $user->update($request->all());
 
         return redirect()->back()
             ->with('success', 'Agent Updated successfully');
