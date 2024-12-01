@@ -19,12 +19,18 @@ class WithDrawRequestController extends Controller
     {
             $player = Auth::user();
             
+            $data = ModelsWithDrawRequest::where('user_id', $player->id)->where('status', 0)->first();
+
             if (! $player || ! Hash::check($request->password, $player->password)) {
                 return $this->error('', 'လျို့ဝှက်နံပါတ်ကိုက်ညီမှု မရှိပါ။', 401);
             }
 
             if ($player->balanceFloat < $request->amount) {
                 return $this->error('', 'Insufficient balance', 401);
+            }
+
+            if ($data) {
+                return $this->error('', 'Please wait to withdraw', 401);
             }
 
             if ($request->amount > $player->balanceFloat) {
