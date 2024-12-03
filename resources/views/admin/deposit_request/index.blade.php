@@ -96,7 +96,10 @@
             @endforeach
           </tbody>
           <tr>
-            <td class="text-right"><strong>Total:</strong></td>
+
+            <td class="text-center"><strong>Total Amount: </strong></td>
+            <td></td>
+            <td></td>
             <td><strong>{{number_format($totalAmount)}}</strong></td>
           </tr>
         </table>
