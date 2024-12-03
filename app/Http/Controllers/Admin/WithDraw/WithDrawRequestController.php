@@ -19,6 +19,9 @@ class WithDrawRequestController extends Controller
             ->when($request->filled('status') && $request->input('status') !== 'all', function ($query) use ($request) {
                 $query->where('status', $request->input('status'));
             })
+            ->when($request->start_date && $request->end_date, function ($query) use ($request) {
+                $query->whereBetween('created_at', [$request->start_date . ' 00:00:00' , $request->end_date . ' 23:59:59']);
+            })
             ->orderBy('id', 'desc')
             ->get();
 

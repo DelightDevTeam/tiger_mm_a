@@ -56,6 +56,18 @@
                             </div>
                         </div>
                         <div class="col-md-3">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="">StartDate</label>
+                                <input type="date" class="form-control" name="start_date" value="{{request()->get('start_date')}}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="">EndDate</label>
+                                <input type="date" class="form-control" name="end_date" value="{{request()->get('end_date')}}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <button class="btn btn-sm btn-primary" id="search" type="submit">Search</button>
                             <a href="{{route('admin.agent.withdraw')}}" class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Refresh">
                                 <i class="material-icons text-lg">refresh</i>
@@ -130,12 +142,12 @@
                         </tr>
                         @endforeach
                     </tbody>
-                        <tr>
-                            <td class="text-center"><strong>Total Amount: </strong></td>
-                            <td></td>
-                            <td></td>
-                            <td><strong>{{ number_format($totalAmount) }}</strong></td>
-                        </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="text-center"><strong>Total Amount: </strong></td>
+                        <td><strong>{{ number_format($totalAmount) }}</strong></td>
+                    </tr>
                 </table>
             </div>
         </div>
