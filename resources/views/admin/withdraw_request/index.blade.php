@@ -11,6 +11,18 @@
         appearance: none;
         /* For some browsers */
     }
+
+    tfoot {
+        background-color: #f8f9fa;
+        /* Light background for contrast */
+        font-weight: bold;
+        border-top: 2px solid #dee2e6;
+        /* Solid top border for separation */
+    }
+
+    .qty {
+        text-align: left;
+    }
 </style>
 @endsection
 @section('content')
@@ -32,7 +44,7 @@
                             <div class="input-group input-group-static mb-4">
                                 <label for="exampleFormControlSelect1" class="ms-0">Select Status</label>
                                 <select class="form-control" id="" name="status">
-                                        <option value="all" {{ request()->get('status') == 'all' ? 'selected' : ''  }} >All
+                                    <option value="all" {{ request()->get('status') == 'all' ? 'selected' : ''  }}>All
                                     </option>
                                     <option value="0" {{ request()->get('status') == '0' ? 'selected' : ''  }}>Pending
                                     </option>
@@ -118,13 +130,12 @@
                         </tr>
                         @endforeach
                     </tbody>
-                    <tfoot>
                         <tr>
-                            <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                            <td class="text-center"><strong>Total Amount: </strong></td>
+                            <td></td>
+                            <td></td>
                             <td><strong>{{ number_format($totalAmount) }}</strong></td>
-                            <td colspan="5"></td>
                         </tr>
-                    </tfoot>
                 </table>
             </div>
         </div>
@@ -133,53 +144,18 @@
 @endsection
 @section('scripts')
 <script src="{{ asset('admin_app/assets/js/plugins/datatables.js') }}"></script>
-
 <script>
-    if (document.getElementById('users-search')) {
-        const dataTableSearch = new simpleDatatables.DataTable("#users-search", {
+    document.addEventListener("DOMContentLoaded", function() {
+        const table = new simpleDatatables.DataTable("#users-search", {
             searchable: true,
             fixedHeight: false,
-            perPage: 7,
-            footerCallback: function (row, data, start, end, display) {
-            var api = this.api();
-
-            // Sum the 'Requested Amount' column
-            var total = api
-                .column(3, { page: 'current' }) // Index of 'Requested Amount'
-                .data()
-                .reduce(function (a, b) {
-                    return parseFloat(a) + parseFloat(b);
-                }, 0);
-
-            // Update footer
-            $(api.column(3).footer()).html(
-                new Intl.NumberFormat().format(total) // Format number with commas
-            );
-        },
+            perPage: 7
         });
-
-        document.querySelectorAll(".export").forEach(function(el) {
-            el.addEventListener("click", function(e) {
-                var type = el.dataset.type;
-
-                var data = {
-                    type: type,
-                    filename: "material-" + type,
-                };
-
-                if (type === "csv") {
-                    data.columnDelimiter = "|";
-                }
-
-                dataTableSearch.export(data);
-            });
+        // Tooltip Initialization
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
-    };
-</script>
-<script>
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
+    });
 </script>
 @endsection
