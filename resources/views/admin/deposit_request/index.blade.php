@@ -81,7 +81,7 @@
           <tbody>
             @php $totalAmount = 0; @endphp
             @foreach ($deposits as $deposit)
-            <tr>
+            <tr id="tr">
               <td>{{ $loop->iteration }}</td>
               <td>{{ $deposit->user->user_name}}</td>
               <td>{{ $deposit->user->name }}</td>
@@ -112,7 +112,7 @@
             <td></td>
             <td></td>
             <td class="text-center"><strong>Total Amount: </strong></td>
-            <td><strong>{{number_format($totalAmount)}}</strong></td>
+            <td><strong id="filteredTotalAmount">0</strong></td>
           </tr>
         </table>
       </div>
@@ -128,23 +128,30 @@
           perPage: 7
         });
 
-        document.querySelectorAll(".export").forEach(function(el) {
-          el.addEventListener("click", function(e) {
-            var type = el.dataset.type;
+        function calculateFilteredTotal() {
+          let totalAmount = 0;
 
-            var data = {
-              type: type,
-              filename: "material-" + type,
-            };
+          const filteredRows = dataTableSearch.body.querySelectorAll('tr');
 
-            if (type === "csv") {
-              data.columnDelimiter = "|";
+          filteredRows.forEach(row => {
+            const amountCell = row.querySelector("td:nth-child(4)");
+            if (amountCell) {
+              // Parse the cell content as a number
+              const amountValue = parseFloat(amountCell.textContent.replace(/,/g, '')) || 0;
+              totalAmount += amountValue;
             }
-
-            dataTableSearch.export(data);
           });
-        });
-      };
+
+          const totalAmountElement = document.getElementById('filteredTotalAmount');
+          if (totalAmountElement) {
+            totalAmountElement.textContent = new Intl.NumberFormat().format(totalAmount);
+          }
+        }
+
+        dataTableSearch.on('datatable.update', calculateFilteredTotal);
+
+        calculateFilteredTotal();
+      }
     </script>
     <script>
       var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

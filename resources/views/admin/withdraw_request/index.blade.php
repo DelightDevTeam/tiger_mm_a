@@ -146,8 +146,8 @@
                         <td></td>
                         <td></td>
                         <td class="text-center"><strong>Total Amount: </strong></td>
-                        <td><strong>{{ number_format($totalAmount) }}</strong></td>
-                    </tr>
+                        <td><strong id="filteredTotalAmount">0</strong></td>
+                        </tr>
                 </table>
             </div>
         </div>
@@ -157,17 +157,42 @@
 @section('scripts')
 <script src="{{ asset('admin_app/assets/js/plugins/datatables.js') }}"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const table = new simpleDatatables.DataTable("#users-search", {
+    if (document.getElementById('users-search')) {
+        const dataTableSearch = new simpleDatatables.DataTable("#users-search", {
             searchable: true,
             fixedHeight: false,
             perPage: 7
         });
-        // Tooltip Initialization
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(function(tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    });
+
+        function calculateFilteredTotal() {
+            let totalAmount = 0;
+
+            const filteredRows = dataTableSearch.body.querySelectorAll('tr');
+
+            filteredRows.forEach(row => {
+                const amountCell = row.querySelector("td:nth-child(4)");
+                if (amountCell) {
+                    // Parse the cell content as a number
+                    const amountValue = parseFloat(amountCell.textContent.replace(/,/g, '')) || 0;
+                    totalAmount += amountValue;
+                }
+            });
+
+            const totalAmountElement = document.getElementById('filteredTotalAmount');
+            if (totalAmountElement) {
+                totalAmountElement.textContent = new Intl.NumberFormat().format(totalAmount);
+            }
+        }
+
+        dataTableSearch.on('datatable.update', calculateFilteredTotal);
+
+        calculateFilteredTotal();
+    }
+</script>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 </script>
 @endsection
